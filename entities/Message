@@ -1,0 +1,54 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "chat_id": {
+      "type": "string",
+      "description": "ID \u0447\u0430\u0442\u0430"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "ID \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u0435\u043b\u044f"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "\u0418\u043c\u044f \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u0435\u043b\u044f"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "teacher",
+        "student",
+        "support"
+      ],
+      "description": "\u0420\u043e\u043b\u044c \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u0435\u043b\u044f"
+    },
+    "content": {
+      "type": "string",
+      "description": "\u0422\u0435\u043a\u0441\u0442 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL \u043f\u0440\u0438\u043a\u0440\u0435\u043f\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0444\u0430\u0439\u043b\u0430"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "\u0418\u043c\u044f \u043f\u0440\u0438\u043a\u0440\u0435\u043f\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0444\u0430\u0439\u043b\u0430"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u041f\u0440\u043e\u0447\u0438\u0442\u0430\u043d\u043e \u043b\u0438 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435"
+    },
+    "is_system": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0421\u0438\u0441\u0442\u0435\u043c\u043d\u043e\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435"
+    }
+  },
+  "required": [
+    "chat_id",
+    "sender_id",
+    "content"
+  ]
+}

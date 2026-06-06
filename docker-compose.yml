@@ -1,0 +1,13 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_ID: ${VITE_APP_ID:-local}
+        VITE_BASE44_APP_ID: ${VITE_BASE44_APP_ID:-}
+        VITE_BASE44_FUNCTIONS_VERSION: ${VITE_BASE44_FUNCTIONS_VERSION:-}
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/}
+    ports:
+      - "${APP_PORT:-8080}:80"
+    restart: unless-stopped

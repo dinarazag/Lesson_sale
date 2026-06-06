@@ -1,0 +1,9 @@
+{
+  "name": "Lesson Sale",
+  "short_name": "Lesson Sale",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "lang": "ru"
+}

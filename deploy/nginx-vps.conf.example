@@ -1,0 +1,32 @@
+# Пример для VPS без Docker: скопируйте в /etc/nginx/sites-available/your-app
+# и включите: sudo ln -s .../your-app /etc/nginx/sites-enabled/
+#
+# Перед этим соберите проект на сервере:
+#   npm ci && npm run build
+# и укажите root на папку dist (путь ниже замените на свой).
+
+server {
+    listen 80;
+    server_name your-domain.ru www.your-domain.ru;
+
+    root /var/www/lesson-sale/dist;
+    index index.html;
+
+    location = /health {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# HTTPS (Let's Encrypt): после certbot конфиг обычно дополняется автоматически.
+# certbot --nginx -d your-domain.ru -d www.your-domain.ru

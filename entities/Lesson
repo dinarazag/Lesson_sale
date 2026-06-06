@@ -1,0 +1,93 @@
+{
+  "name": "Lesson",
+  "type": "object",
+  "properties": {
+    "teacher_id": {
+      "type": "string",
+      "description": "ID \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u044f"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "\u0418\u043c\u044f \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u044f"
+    },
+    "teacher_avatar": {
+      "type": "string",
+      "description": "\u0424\u043e\u0442\u043e \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u044f"
+    },
+    "teacher_rating": {
+      "type": "number",
+      "description": "\u0420\u0435\u0439\u0442\u0438\u043d\u0433 \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u044f"
+    },
+    "subject": {
+      "type": "string",
+      "default": "\u0410\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439 \u044f\u0437\u044b\u043a",
+      "description": "\u041f\u0440\u0435\u0434\u043c\u0435\u0442"
+    },
+    "student_level": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "elementary",
+        "intermediate",
+        "upper_intermediate",
+        "advanced"
+      ],
+      "description": "\u0423\u0440\u043e\u0432\u0435\u043d\u044c \u0443\u0447\u0435\u043d\u0438\u043a\u0430"
+    },
+    "lesson_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u0414\u0430\u0442\u0430 \u0438 \u0432\u0440\u0435\u043c\u044f \u0443\u0440\u043e\u043a\u0430"
+    },
+    "format": {
+      "type": "string",
+      "default": "online",
+      "description": "\u0424\u043e\u0440\u043c\u0430\u0442 \u0443\u0440\u043e\u043a\u0430"
+    },
+    "original_price": {
+      "type": "number",
+      "description": "\u041e\u0431\u044b\u0447\u043d\u0430\u044f \u0446\u0435\u043d\u0430"
+    },
+    "discounted_price": {
+      "type": "number",
+      "description": "\u0426\u0435\u043d\u0430 \u0441\u043e \u0441\u043a\u0438\u0434\u043a\u043e\u0439"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u0412\u0440\u0435\u043c\u044f \u0438\u0441\u0442\u0435\u0447\u0435\u043d\u0438\u044f \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "booked",
+        "completed",
+        "expired",
+        "cancelled"
+      ],
+      "default": "active",
+      "description": "\u0421\u0442\u0430\u0442\u0443\u0441 \u0443\u0440\u043e\u043a\u0430"
+    },
+    "booked_by": {
+      "type": "string",
+      "description": "ID \u0437\u0430\u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u0432\u0448\u0435\u0433\u043e \u0443\u0447\u0435\u043d\u0438\u043a\u0430"
+    },
+    "booked_by_name": {
+      "type": "string",
+      "description": "\u0418\u043c\u044f \u0443\u0447\u0435\u043d\u0438\u043a\u0430"
+    },
+    "booked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u0412\u0440\u0435\u043c\u044f \u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "subject",
+    "lesson_date",
+    "original_price",
+    "discounted_price"
+  ]
+}
