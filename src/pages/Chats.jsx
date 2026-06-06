@@ -45,9 +45,9 @@ export default function Chats() {
   useEffect(() => {
     // Update page title with unread count
     if (totalUnread > 0) {
-      document.title = `(${totalUnread}) Сообщения - TeachersMarket`;
+      document.title = `(${totalUnread}) Сообщения - Lesson Sale`;
     } else {
-      document.title = 'Сообщения - TeachersMarket';
+      document.title = 'Сообщения - Lesson Sale';
     }
   }, [totalUnread]);
 
