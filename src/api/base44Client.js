@@ -57,7 +57,7 @@ const ensureAuthState = () => {
 
 const ensureCollections = () => {
   const collections = readJson(STORAGE_KEYS.collections, null);
-  if (collections) return collections;
+  if (collections) return ensureWaitlistCollection(collections);
   const initial = {
     User: [],
     Lesson: [],
@@ -66,9 +66,18 @@ const ensureCollections = () => {
     Notification: [],
     Review: [],
     SupportTicket: [],
+    WaitlistEntry: [],
   };
   writeJson(STORAGE_KEYS.collections, initial);
   return initial;
+};
+
+const ensureWaitlistCollection = (collections) => {
+  if (!collections.WaitlistEntry) {
+    collections.WaitlistEntry = [];
+    writeJson(STORAGE_KEYS.collections, collections);
+  }
+  return collections;
 };
 
 const ensureUser = () => {
@@ -122,13 +131,13 @@ const filterItems = (items, where = {}) =>
 
 const getCollectionApi = (collectionName) => ({
   async filter(where = {}, sortBy) {
-    const collections = ensureCollections();
+    const collections = ensureWaitlistCollection(ensureCollections());
     const rows = collections[collectionName] ?? [];
     return sortItems(filterItems(rows, where), sortBy);
   },
 
   async create(payload = {}) {
-    const collections = ensureCollections();
+    const collections = ensureWaitlistCollection(ensureCollections());
     const rows = collections[collectionName] ?? [];
     const row = {
       id: payload.id ?? nextId(collectionName),

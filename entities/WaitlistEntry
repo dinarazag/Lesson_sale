@@ -1,0 +1,25 @@
+{
+  "name": "WaitlistEntry",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Имя"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email для уведомления о запуске"
+    },
+    "user_type": {
+      "type": "string",
+      "enum": ["student", "teacher"],
+      "description": "Роль: ученик или преподаватель"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "invited"],
+      "default": "pending",
+      "description": "Статус в листе ожидания"
+    }
+  }
+}

@@ -1,42 +1,17 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Flame, Clock, Percent, Shield, Users, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
+import WaitlistSection from '@/components/landing/WaitlistSection';
 
 export default function Landing() {
-  const navigate = useNavigate();
+  const [waitlistFormOpen, setWaitlistFormOpen] = useState(false);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const user = await base44.auth.me();
-      if (user?.onboarding_completed) {
-        navigate(createPageUrl('Feed'));
-      } else if (user) {
-        navigate(createPageUrl('Onboarding'));
-      }
-    } catch (error) {
-      // User not authenticated, stay on landing
-    }
-  };
-
-  const handleGetStarted = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        navigate(createPageUrl('Onboarding'));
-      } else {
-        base44.auth.redirectToLogin(createPageUrl('Onboarding'));
-      }
-    } catch (error) {
-      base44.auth.redirectToLogin(createPageUrl('Onboarding'));
-    }
+  const openWaitlist = () => {
+    setWaitlistFormOpen(true);
+    requestAnimationFrame(() => {
+      document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   };
 
   return (
@@ -44,7 +19,7 @@ export default function Landing() {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-red-500 text-white">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-20" />
-        
+
         <div className="relative max-w-4xl mx-auto px-4 py-20 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -53,24 +28,25 @@ export default function Landing() {
           >
             <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
               <Flame className="w-5 h-5" />
-              <span className="font-semibold">lesson_sale</span>
+              <span className="font-semibold">Lesson Sale</span>
             </div>
-            
+
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
               Горящие уроки<br />со скидками до 50%
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
               Платформа для быстрого бронирования уроков от лучших преподавателей по выгодным ценам
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                onClick={handleGetStarted}
+                type="button"
+                onClick={openWaitlist}
                 size="lg"
                 className="bg-white text-orange-600 hover:bg-gray-50 h-14 px-8 rounded-2xl text-lg font-semibold"
               >
-                Начать бесплатно
+                Добавьте меня в лист ожидания
               </Button>
             </div>
           </motion.div>
@@ -86,7 +62,7 @@ export default function Landing() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Почему lesson_sale?
+            Почему Lesson Sale?
           </h2>
           <p className="text-xl text-gray-600">
             Выгодно для учеников, удобно для преподавателей
@@ -203,30 +179,16 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="bg-gradient-to-br from-orange-500 to-red-500 text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Готовы начать?
-          </h2>
-          <p className="text-xl text-white/90 mb-8">
-            Присоединяйтесь к lesson_sale и начните экономить на обучении уже сегодня
-          </p>
-          <Button
-            onClick={handleGetStarted}
-            size="lg"
-            className="bg-white text-orange-600 hover:bg-gray-50 h-14 px-8 rounded-2xl text-lg font-semibold"
-          >
-            Зарегистрироваться бесплатно
-          </Button>
-        </div>
-      </div>
+      <WaitlistSection
+        formOpen={waitlistFormOpen}
+        onFormOpenChange={setWaitlistFormOpen}
+      />
 
       {/* Footer */}
       <div className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-sm">
-            © 2026 lesson_sale. Платформа для бронирования горящих уроков
+            © 2026 Lesson Sale. Платформа для бронирования горящих уроков
           </p>
         </div>
       </div>
