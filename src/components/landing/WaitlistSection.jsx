@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { joinWaitlist } from '@/lib/waitlist';
+import { PRIVACY_POLICY_VERSION, DATA_RETENTION_LABEL } from '@/lib/privacyConfig';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Bell, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 const ROLE_OPTIONS = [
@@ -10,21 +14,73 @@ const ROLE_OPTIONS = [
   { value: 'teacher', label: 'Преподаватель' },
 ];
 
-export default function WaitlistSection({ formOpen, onFormOpenChange }) {
+const loadDraft = (storageKey) => {
+  if (!storageKey) return null;
+  try {
+    const raw = sessionStorage.getItem(storageKey);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const saveDraft = (storageKey, data) => {
+  if (!storageKey) return;
+  sessionStorage.setItem(storageKey, JSON.stringify(data));
+};
+
+export default function WaitlistSection({ formOpen, onFormOpenChange, draftStorageKey }) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [formData, setFormData] = React.useState({
-    full_name: '',
-    email: '',
-    user_type: 'student',
+  const [personalDataConsent, setPersonalDataConsent] = React.useState(false);
+  const [marketingConsent, setMarketingConsent] = React.useState(false);
+  const [formData, setFormData] = React.useState(() => {
+    const draft = loadDraft(draftStorageKey);
+    return {
+      full_name: draft?.full_name || '',
+      email: draft?.email || '',
+      user_type: draft?.user_type || 'student',
+    };
   });
 
   useEffect(() => {
     if (formOpen) {
       setError('');
+      const draft = loadDraft(draftStorageKey);
+      if (draft) {
+        setFormData((prev) => ({
+          full_name: draft.full_name || prev.full_name,
+          email: draft.email || prev.email,
+          user_type: draft.user_type || prev.user_type,
+        }));
+        if (typeof draft.personal_data_consent === 'boolean') {
+          setPersonalDataConsent(draft.personal_data_consent);
+        }
+        if (typeof draft.marketing_consent === 'boolean') {
+          setMarketingConsent(draft.marketing_consent);
+        }
+      }
     }
-  }, [formOpen]);
+  }, [formOpen, draftStorageKey]);
+
+  useEffect(() => {
+    if (!formOpen || !draftStorageKey) return;
+    saveDraft(draftStorageKey, {
+      ...formData,
+      personal_data_consent: personalDataConsent,
+      marketing_consent: marketingConsent,
+    });
+  }, [formData, personalDataConsent, marketingConsent, formOpen, draftStorageKey]);
+
+  const openPrivacyPolicy = () => {
+    sessionStorage.setItem('lesson_sale_waitlist_form_open', '1');
+    saveDraft(draftStorageKey, {
+      ...formData,
+      personal_data_consent: personalDataConsent,
+      marketing_consent: marketingConsent,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,15 +97,30 @@ export default function WaitlistSection({ formOpen, onFormOpenChange }) {
       setError('Укажите корректный email');
       return;
     }
+    if (!personalDataConsent) {
+      setError('Необходимо согласие на обработку персональных данных');
+      return;
+    }
 
     setIsSubmitting(true);
+    const consentDate = new Date().toISOString();
 
     try {
       await joinWaitlist({
         full_name: fullName,
         email,
         user_type: formData.user_type,
+        personal_data_consent: true,
+        personal_data_consent_date: consentDate,
+        privacy_policy_version: PRIVACY_POLICY_VERSION,
+        marketing_consent: marketingConsent,
+        marketing_consent_date: marketingConsent ? consentDate : null,
       });
+
+      if (draftStorageKey) {
+        sessionStorage.removeItem(draftStorageKey);
+        sessionStorage.removeItem('lesson_sale_waitlist_form_open');
+      }
 
       setIsSuccess(true);
       onFormOpenChange?.(false);
@@ -147,6 +218,57 @@ export default function WaitlistSection({ formOpen, onFormOpenChange }) {
                 </div>
               </div>
 
+              <div className="space-y-3 pt-1">
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="waitlist-pd-consent"
+                    checked={personalDataConsent}
+                    onCheckedChange={(checked) => setPersonalDataConsent(checked === true)}
+                    className="mt-0.5 border-gray-300 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+                  />
+                  <div className="text-sm text-gray-600 leading-snug text-left">
+                    <label htmlFor="waitlist-pd-consent" className="cursor-pointer">
+                      Я соглашаюсь на обработку персональных данных
+                    </label>{' '}
+                    в соответствии с{' '}
+                    <Link
+                      to={createPageUrl('Privacy')}
+                      onClick={openPrivacyPolicy}
+                      className="text-orange-600 hover:underline font-medium"
+                    >
+                      Политикой конфиденциальности
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="waitlist-marketing-consent"
+                    checked={marketingConsent}
+                    onCheckedChange={(checked) => setMarketingConsent(checked === true)}
+                    className="mt-0.5 border-gray-300 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+                  />
+                  <label
+                    htmlFor="waitlist-marketing-consent"
+                    className="text-sm text-gray-600 leading-snug cursor-pointer text-left"
+                  >
+                    Хочу получать новости и предложения Lesson Sale на email (необязательно)
+                  </label>
+                </div>
+
+                {!personalDataConsent && (
+                  <p className="text-xs text-orange-600">
+                    Отметьте согласие на обработку данных, чтобы отправить заявку
+                  </p>
+                )}
+              </div>
+
+              <p className="text-xs text-gray-500 leading-relaxed bg-gray-50 rounded-xl p-3">
+                <strong className="text-gray-700">Цель:</strong> уведомление о запуске платформы
+                и ранний доступ.{' '}
+                <strong className="text-gray-700">Срок хранения:</strong> {DATA_RETENTION_LABEL}.
+              </p>
+
               {error && (
                 <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-xl">
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -161,6 +283,8 @@ export default function WaitlistSection({ formOpen, onFormOpenChange }) {
                   onClick={() => {
                     onFormOpenChange?.(false);
                     setError('');
+                    setPersonalDataConsent(false);
+                    setMarketingConsent(false);
                   }}
                   className="flex-1 h-12 rounded-xl"
                 >

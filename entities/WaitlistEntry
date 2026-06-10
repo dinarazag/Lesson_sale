@@ -20,6 +20,28 @@
       "enum": ["pending", "invited"],
       "default": "pending",
       "description": "Статус в листе ожидания"
+    },
+    "personal_data_consent": {
+      "type": "boolean",
+      "description": "Согласие на обработку ПДн"
+    },
+    "personal_data_consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Дата и время согласия на обработку ПДн"
+    },
+    "privacy_policy_version": {
+      "type": "string",
+      "description": "Версия политики конфиденциальности"
+    },
+    "marketing_consent": {
+      "type": "boolean",
+      "description": "Согласие на рекламную рассылку"
+    },
+    "marketing_consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Дата согласия на рассылку"
     }
   }
 }

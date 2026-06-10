@@ -54,6 +54,7 @@ import FAQ from './pages/FAQ';
 import Feed from './pages/Feed';
 import History from './pages/History';
 import Landing from './pages/Landing';
+import Privacy from './pages/Privacy';
 import NotificationSettings from './pages/NotificationSettings';
 import Notifications from './pages/Notifications';
 import Onboarding from './pages/Onboarding';
@@ -71,6 +72,7 @@ export const PAGES = {
     "Feed": Feed,
     "History": History,
     "Landing": Landing,
+    "Privacy": Privacy,
     "NotificationSettings": NotificationSettings,
     "Notifications": Notifications,
     "Onboarding": Onboarding,

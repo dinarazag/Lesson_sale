@@ -1,11 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Flame, Clock, Percent, Shield, Users, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import WaitlistSection from '@/components/landing/WaitlistSection';
+import LandingFooter from '@/components/landing/LandingFooter';
+
+const WAITLIST_DRAFT_KEY = 'lesson_sale_waitlist_draft';
 
 export default function Landing() {
   const [waitlistFormOpen, setWaitlistFormOpen] = useState(false);
+
+  useEffect(() => {
+    const shouldOpen =
+      window.location.hash === '#waitlist' ||
+      sessionStorage.getItem('lesson_sale_waitlist_form_open') === '1';
+
+    if (shouldOpen) {
+      setWaitlistFormOpen(true);
+      sessionStorage.removeItem('lesson_sale_waitlist_form_open');
+      if (window.location.hash === '#waitlist') {
+        requestAnimationFrame(() => {
+          document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+    }
+  }, []);
 
   const openWaitlist = () => {
     setWaitlistFormOpen(true);
@@ -182,16 +201,10 @@ export default function Landing() {
       <WaitlistSection
         formOpen={waitlistFormOpen}
         onFormOpenChange={setWaitlistFormOpen}
+        draftStorageKey={WAITLIST_DRAFT_KEY}
       />
 
-      {/* Footer */}
-      <div className="bg-gray-900 text-gray-400 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-sm">
-            © 2026 Lesson Sale. Платформа для бронирования горящих уроков
-          </p>
-        </div>
-      </div>
+      <LandingFooter />
     </div>
   );
 }
