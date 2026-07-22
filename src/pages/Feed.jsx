@@ -33,14 +33,9 @@ export default function Feed() {
   const loadUser = async () => {
     try {
       const userData = await base44.auth.me();
-      if (!userData?.onboarding_completed) {
-        navigate(createPageUrl('Onboarding'));
-        return;
-      }
       setUser(userData);
     } catch (error) {
-      // User not authenticated
-      navigate(createPageUrl('Landing'));
+      console.error('Failed to load user', error);
     }
   };
 

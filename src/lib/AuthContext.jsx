@@ -72,14 +72,14 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     
     if (shouldRedirect) {
-      base44.auth.logout('/Landing');
+      base44.auth.logout('/Feed');
     } else {
       base44.auth.logout();
     }
   };
 
   const navigateToLogin = () => {
-    base44.auth.redirectToLogin('/Landing');
+    base44.auth.redirectToLogin('/Feed');
   };
 
   return (

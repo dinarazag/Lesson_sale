@@ -1,36 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Flame, Clock, Percent, Shield, Users, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
-import WaitlistSection from '@/components/landing/WaitlistSection';
 import LandingFooter from '@/components/landing/LandingFooter';
 
-const WAITLIST_DRAFT_KEY = 'lesson_sale_waitlist_draft';
-
 export default function Landing() {
-  const [waitlistFormOpen, setWaitlistFormOpen] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const shouldOpen =
-      window.location.hash === '#waitlist' ||
-      sessionStorage.getItem('lesson_sale_waitlist_form_open') === '1';
-
-    if (shouldOpen) {
-      setWaitlistFormOpen(true);
-      sessionStorage.removeItem('lesson_sale_waitlist_form_open');
-      if (window.location.hash === '#waitlist') {
-        requestAnimationFrame(() => {
-          document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-      }
-    }
-  }, []);
-
-  const openWaitlist = () => {
-    setWaitlistFormOpen(true);
-    requestAnimationFrame(() => {
-      document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+  const startNow = () => {
+    navigate(createPageUrl('Onboarding'));
   };
 
   return (
@@ -61,11 +41,11 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 type="button"
-                onClick={openWaitlist}
+                onClick={startNow}
                 size="lg"
                 className="bg-white text-orange-600 hover:bg-gray-50 h-14 px-8 rounded-2xl text-lg font-semibold"
               >
-                Добавьте меня в лист ожидания
+                Попробовать сейчас
               </Button>
             </div>
           </motion.div>
@@ -198,11 +178,25 @@ export default function Landing() {
         </div>
       </div>
 
-      <WaitlistSection
-        formOpen={waitlistFormOpen}
-        onFormOpenChange={setWaitlistFormOpen}
-        draftStorageKey={WAITLIST_DRAFT_KEY}
-      />
+      {/* Final CTA */}
+      <div className="bg-gradient-to-br from-orange-500 to-red-500 text-white">
+        <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Готовы начать?
+          </h2>
+          <p className="text-xl text-white/90 mb-8">
+            Зарегистрируйтесь за минуту и найдите свой первый урок со скидкой
+          </p>
+          <Button
+            type="button"
+            onClick={startNow}
+            size="lg"
+            className="bg-white text-orange-600 hover:bg-gray-50 h-14 px-8 rounded-2xl text-lg font-semibold"
+          >
+            Попробовать сейчас
+          </Button>
+        </div>
+      </div>
 
       <LandingFooter />
     </div>

@@ -52,10 +52,6 @@ export default function Profile() {
 
   const loadUser = async () => {
     const userData = await base44.auth.me();
-    if (!userData?.onboarding_completed) {
-      navigate(createPageUrl('Onboarding'));
-      return;
-    }
     setUser(userData);
     setEditData({
       phone: userData.phone || '',

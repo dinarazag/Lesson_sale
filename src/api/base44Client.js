@@ -1,7 +1,7 @@
 const STORAGE_KEYS = {
-  auth: "lesson_sale_auth",
-  user: "lesson_sale_user",
-  collections: "lesson_sale_collections",
+  auth: "lesson_sale_auth_v3",
+  user: "lesson_sale_user_v3",
+  collections: "lesson_sale_collections_v3",
 };
 
 const DEFAULT_USER = {
@@ -55,12 +55,61 @@ const ensureAuthState = () => {
   return initial;
 };
 
+const makeDemoLessons = () => {
+  const now = Date.now();
+  const hour = 60 * 60 * 1000;
+  const day = 24 * hour;
+  const at = (offsetMs) => new Date(now + offsetMs).toISOString();
+
+  const base = [
+    {
+      teacher_name: "Анна Петрова",
+      teacher_rating: 4.9,
+      subject: "Английский язык",
+      student_level: "intermediate",
+      lesson_date: at(6 * hour),
+      original_price: 2000,
+      discounted_price: 1200,
+    },
+    {
+      teacher_name: "Игорь Смирнов",
+      teacher_rating: 4.7,
+      subject: "Математика",
+      student_level: "advanced",
+      lesson_date: at(day + 2 * hour),
+      original_price: 2500,
+      discounted_price: 1500,
+    },
+    {
+      teacher_name: "Мария Кузнецова",
+      teacher_rating: 5.0,
+      subject: "Испанский язык",
+      student_level: "beginner",
+      lesson_date: at(2 * day + 4 * hour),
+      original_price: 1800,
+      discounted_price: 990,
+    },
+  ];
+
+  return base.map((item, index) => ({
+    id: `demo_lesson_${index + 1}`,
+    teacher_id: `demo_teacher_${index + 1}`,
+    teacher_avatar: "",
+    format: "online",
+    status: "active",
+    expires_at: at(day),
+    created_date: nowIso(),
+    updated_date: nowIso(),
+    ...item,
+  }));
+};
+
 const ensureCollections = () => {
   const collections = readJson(STORAGE_KEYS.collections, null);
   if (collections) return ensureWaitlistCollection(collections);
   const initial = {
     User: [],
-    Lesson: [],
+    Lesson: makeDemoLessons(),
     Chat: [],
     Message: [],
     Notification: [],

@@ -37,10 +37,6 @@ export default function History() {
 
   const loadUser = async () => {
     const userData = await base44.auth.me();
-    if (!userData?.onboarding_completed) {
-      navigate(createPageUrl('Onboarding'));
-      return;
-    }
     setUser(userData);
   };
 
