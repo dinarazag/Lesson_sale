@@ -28,13 +28,18 @@ export default function Onboarding() {
 
   const checkOnboarding = async () => {
     try {
-      const user = await base44.auth.me();
+      let user;
+      try {
+        user = await base44.auth.me();
+      } catch {
+        // После logout сессии нет — поднимаем локальную и продолжаем онбординг
+        user = await base44.auth.login();
+      }
       if (user?.onboarding_completed) {
         navigate(createPageUrl('Feed'));
       }
     } catch (error) {
-      // User not authenticated, redirect to landing
-      navigate(createPageUrl('Landing'));
+      console.error('Onboarding init failed', error);
     }
   };
 

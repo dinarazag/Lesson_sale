@@ -243,13 +243,28 @@ const auth = {
     return updated;
   },
 
+  /** Локальный «вход»: включает сессию и возвращает текущего пользователя. */
+  async login() {
+    writeJson(STORAGE_KEYS.auth, { isAuthenticated: true });
+    return ensureUser();
+  },
+
+  /** Выход: сбрасывает демо-пользователя, чтобы «Попробовать сейчас» снова открывал онбординг. */
   logout(redirectTo) {
     writeJson(STORAGE_KEYS.auth, { isAuthenticated: false });
+    const freshUser = {
+      ...DEFAULT_USER,
+      id: nextId("user"),
+      created_date: nowIso(),
+      updated_date: nowIso(),
+    };
+    writeJson(STORAGE_KEYS.user, freshUser);
     if (isBrowser && redirectTo) window.location.assign(redirectTo);
   },
 
   redirectToLogin(targetPath = "/") {
     writeJson(STORAGE_KEYS.auth, { isAuthenticated: true });
+    ensureUser();
     if (isBrowser) window.location.assign(targetPath);
   },
 };

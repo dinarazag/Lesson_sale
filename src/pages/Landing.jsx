@@ -1,16 +1,16 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Flame, Clock, Percent, Shield, Users, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LandingFooter from '@/components/landing/LandingFooter';
 
 export default function Landing() {
-  const navigate = useNavigate();
-
   const startNow = () => {
-    navigate(createPageUrl('Onboarding'));
+    // Полная перезагрузка с новой сессией — после logout иначе Onboarding
+    // ловит 401 и сразу кидает обратно на лендинг.
+    base44.auth.redirectToLogin(createPageUrl('Onboarding'));
   };
 
   return (
